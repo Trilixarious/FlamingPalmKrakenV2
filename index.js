@@ -21,7 +21,7 @@ class ClientDecorator extends Client{
           
     }
 }
-const client = new ClientDecorator();
+global.client = new ClientDecorator();
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
