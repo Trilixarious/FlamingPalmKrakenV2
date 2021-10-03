@@ -10,7 +10,7 @@ module.exports = function (client) {
             results.forEach(result => knownUserCache.push(result.ID))
         });
     cron.schedule('30 0,15,30,45 * * * *', () => {
-        client.log('running statistics tracking cron job');
+        //client.log('running statistics tracking cron job');
         client.DBconnection.query(
             'Select ID from Channel', function (error, results, fields) {
                 if(error != null){ client.log(error)}
