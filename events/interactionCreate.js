@@ -7,7 +7,7 @@ module.exports = {
         try {
             await command.execute(interaction);
         } catch (error) {
-            console.error(error);
+            client.log(error);
             await interaction.reply({ content: 'Issue executing commmand, alert niels', ephemeral: true });
         }	
     },

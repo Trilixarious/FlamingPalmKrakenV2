@@ -6,7 +6,7 @@ const app = express();
 module.exports = function (client) {
     app.use(cors());
 
-    console.log("Loading WabApi Module")
+    //client.log("Loading WebApi Module")
     app.get('/', function (req, res) {
         res.send('API test page.')
     })
@@ -18,7 +18,7 @@ module.exports = function (client) {
             ' group by timestamp',
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -35,7 +35,7 @@ module.exports = function (client) {
             ' group by timestamp ',[date],
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -51,7 +51,7 @@ module.exports = function (client) {
            " WHERE date(TimeStamp) = ? GROUP BY VoiceConnected.ID order by y desc" , [date],
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -66,7 +66,7 @@ module.exports = function (client) {
            " WHERE VoiceConnected.TimeStamp >= curdate() - INTERVAL DAYOFWEEK(curdate())+6 DAY group by Channel.ChannelName",
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -80,7 +80,7 @@ module.exports = function (client) {
            " WHERE VoiceConnected.TimeStamp >= curdate() - INTERVAL DAYOFWEEK(curdate())+6 DAY GROUP BY VoiceConnected.ID order by y desc" ,
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -97,7 +97,7 @@ module.exports = function (client) {
            " GROUP BY VoiceConnected.ID order by y desc" ,
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -114,7 +114,7 @@ module.exports = function (client) {
            "WHERE VoiceConnected.TimeStamp >= curdate() - INTERVAL DAYOFWEEK(curdate())+6 DAY AND VoiceConnected.ID = ?" , [userId],
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -129,7 +129,7 @@ module.exports = function (client) {
            "SELECT * FROM `Members` where ID =  ?" , [userId],
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -144,7 +144,7 @@ module.exports = function (client) {
             "select DISTINCT YEAR(timestamp) from VoiceConnected",
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{
@@ -161,7 +161,7 @@ module.exports = function (client) {
             "group by year,month, day",[year],
             function (error, results, fields) {
                 if(error != null){ 
-                    console.log(error)
+                    client.log(error)
                     res.send(JSON.stringify("Failure"))
                 }
                 else{

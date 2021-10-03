@@ -10,9 +10,9 @@ module.exports = {
 							user.roles.add(roles.find(val => val.name == reaction.message.content)) 
                         );
                     })
-                .catch(err => console.log(err))
+                .catch(err => client.log(err))
             }
-            catch(e){console.log(e);}
+            catch(e){client.log(e);}
         }
     },
 };

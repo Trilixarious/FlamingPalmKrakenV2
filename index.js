@@ -18,7 +18,11 @@ class ClientDecorator extends Client{
             password        : DBPASS,
             database        : 'discordstats'
           });
-          
+          this.logChannel;
+    }
+    log(loggText){
+        console.log(loggText);
+        this.logChannel.send(loggText);
     }
 }
 global.client = new ClientDecorator();
