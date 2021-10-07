@@ -2,27 +2,34 @@
 const fs = require('fs');
 const { Client,Collection, Intents } = require('discord.js');
 const { token,DBHOST,DBPASS } = require('./config.js');
+
+const Islander = require('./islander/Islander')
+const { createCanvas, loadImage } = require('canvas')
+const { PrismaClient } = require( '@prisma/client');
 const mysql = require('mysql');
 
-// Create a new client instance
+
 class ClientDecorator extends Client{
     constructor(){
         super({
-            intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+            intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_PRESENCES,Intents.FLAGS.DIRECT_MESSAGES],
             partials: ['MESSAGE', 'CHANNEL', 'REACTION']
          });
-        this.DBconnection = mysql.createPool({
+         this.DBconnection = mysql.createPool({
             connectionLimit : 10,
             host            : DBHOST,
             user            : 'root',
             password        : DBPASS,
             database        : 'discordstats'
           });
-          this.logChannel;
+        
+        this.prisma = new PrismaClient()
+        this.logChannel;
+        this.islander = new Islander(this);
     }
     log(loggText){
         console.log(loggText);
-        this.logChannel.send(loggText);
+        //this.logChannel.send(loggText);
     }
 }
 global.client = new ClientDecorator();

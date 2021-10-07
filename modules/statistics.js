@@ -17,8 +17,8 @@ module.exports = function (client) {
                 var trackedChannels = [];
                 results.forEach(result => trackedChannels.push(result.ID));
                 trackedChannels.forEach(channelID =>{
-                    client.channels.fetch(channelID, false)
-                    .then(channel => Array.from(channel.members.values()).forEach(member => {
+                    client.channels.fetch(channelID)
+                    .then(channel => channel.members.forEach(member => {
                         if(!knownUserCache.includes(member.id)){
                             client.DBconnection.query(
                                 'INSERT INTO Members (ID,DisplayName,avatar) VALUES (?,?,?)',
