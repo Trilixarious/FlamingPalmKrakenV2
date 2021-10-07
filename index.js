@@ -3,9 +3,8 @@ const fs = require('fs');
 const { Client,Collection, Intents } = require('discord.js');
 const { token,DBHOST,DBPASS } = require('./config.js');
 
-const Islander = require('./islander/Islander')
-const { createCanvas, loadImage } = require('canvas')
-const { PrismaClient } = require( '@prisma/client');
+//const Islander = require('./islander/Islander')
+//const { PrismaClient } = require( '@prisma/client');
 const mysql = require('mysql');
 
 
