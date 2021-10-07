@@ -12,7 +12,7 @@ const mysql = require('mysql');
 class ClientDecorator extends Client{
     constructor(){
         super({
-            intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_PRESENCES,Intents.FLAGS.DIRECT_MESSAGES],
+            intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.DIRECT_MESSAGES],
             partials: ['MESSAGE', 'CHANNEL', 'REACTION']
          });
          this.DBconnection = mysql.createPool({
