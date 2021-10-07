@@ -17,6 +17,7 @@ module.exports = function (client) {
                 var trackedChannels = [];
                 results.forEach(result => trackedChannels.push(result.ID));
                 trackedChannels.forEach(channelID =>{
+                    client.channels.cache.clear();
                     client.channels.fetch(channelID)
                     .then(channel => channel.members.forEach(member => {
                         if(!knownUserCache.includes(member.id)){
