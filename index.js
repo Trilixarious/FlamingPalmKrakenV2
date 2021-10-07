@@ -23,9 +23,9 @@ class ClientDecorator extends Client{
             database        : 'discordstats'
           });
         
-        this.prisma = new PrismaClient()
+        //this.prisma = new PrismaClient()
         this.logChannel;
-        this.islander = new Islander(this);
+        //this.islander = new Islander(this);
     }
     log(loggText){
         console.log(loggText);
