@@ -3,21 +3,23 @@ const cron = require('node-cron');
 var knownUserCache = [];
 
 module.exports = function (client) {
-    //client.log("loading statistics module");
+    client.log("loading statistics module");
     client.DBconnection.query(
         'Select ID from Members', function (error, results, fields) {
             if(error != null){ client.log(error)}
             results.forEach(result => knownUserCache.push(result.ID))
         });
     cron.schedule('30 0,15,30,45 * * * *', () => {
-        //client.log('running statistics tracking cron job');
+        client.log('running statistics tracking cron job');
         client.DBconnection.query(
             'Select ID from Channel', function (error, results, fields) {
                 if(error != null){ client.log(error)}
                 var trackedChannels = [];
                 results.forEach(result => trackedChannels.push(result.ID));
                 trackedChannels.forEach(channelID =>{
+                    client.log(client.channels.cache);
                     client.channels.cache.clear();
+                    client.log(client.channels.cache);
                     client.channels.fetch(channelID)
                     .then(channel => channel.members.forEach(member => {
                         if(!knownUserCache.includes(member.id)){
