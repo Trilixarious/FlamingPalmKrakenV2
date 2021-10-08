@@ -11,15 +11,14 @@ module.exports = function (client) {
         });
     cron.schedule('30 0,15,30,45 * * * *', () => {
         client.log('running statistics tracking cron job');
+        try {
         client.DBconnection.query(
             'Select ID from Channel', function (error, results, fields) {
                 if(error != null){ client.log(error)}
                 var trackedChannels = [];
                 results.forEach(result => trackedChannels.push(result.ID));
                 trackedChannels.forEach(channelID =>{
-                    client.log(client.channels.cache);
                     client.channels.cache.clear();
-                    client.log(client.channels.cache);
                     client.channels.fetch(channelID)
                     .then(channel => channel.members.forEach(member => {
                         if(!knownUserCache.includes(member.id)){
@@ -39,6 +38,10 @@ module.exports = function (client) {
                     .catch( err => client.log(err));
                 });   
             });
+    }
+    catch( err){
+        client.channelLog("Statistics module error " + err.toString());
+    }
     });
 }
 
