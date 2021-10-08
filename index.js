@@ -28,6 +28,7 @@ class ClientDecorator extends Client{
     }
     log(loggText){
         console.log(loggText);
+        //test
     }
     channelLog(){
         this.logChannel.send(loggText.toString());
