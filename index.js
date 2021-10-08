@@ -29,7 +29,7 @@ class ClientDecorator extends Client{
     log(loggText){
         console.log(loggText);
         try{
-        this.logChannel.send(loggText.toString());
+        //this.logChannel.send(loggText.toString());
         }
         catch(err){
             console.log(err);
