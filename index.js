@@ -28,7 +28,12 @@ class ClientDecorator extends Client{
     }
     log(loggText){
         console.log(loggText);
-        this.logChannel.send(loggText);
+        try{
+        this.logChannel.send(loggText.toString());
+        }
+        catch(err){
+            console.log(err);
+        }
     }
 }
 global.client = new ClientDecorator();
