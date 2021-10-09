@@ -1,5 +1,6 @@
 
 const cron = require('node-cron');
+const { Collection } = require('discord.js');
 
 module.exports = async function (client) {
     var knownuserCache = []
@@ -14,9 +15,12 @@ module.exports = async function (client) {
 
     cron.schedule('30 0,15,30,45 * * * *', () => {
          client.log('running statistics tracking cron job');
+         let cache =  client.channels.cache;
+         cache.clear();
          try {
             trackedChannels.forEach(trackedChannel =>{
                 let channelID = trackedChannel.ID;
+                
                 client.channels.fetch(channelID).then(channel =>{
                     let membersInChannel = [];
                     channel.members.forEach(member => {
