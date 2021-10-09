@@ -151,6 +151,9 @@ model i_BuildingLevel {
   Stone      Int        @default(0) @db.UnsignedMediumInt
   Time       Int        @default(0) @db.UnsignedMediumInt
   TClevel    Int?       @default(0) @db.UnsignedTinyInt
+  imagename  String     @db.VarChar(255)
+  imagePosY  Int        @db.MediumInt
+  imagePosX  Int        @db.MediumInt
   i_Building i_Building @relation(fields: [BuildingID], references: [ID], onDelete: Cascade, map: "i_BuildingLevel_ibfk_1")
 
   @@id([BuildingID, Level])
