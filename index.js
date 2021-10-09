@@ -3,9 +3,10 @@ const fs = require('fs');
 const { Client,Collection, Intents } = require('discord.js');
 const { token,DBHOST,DBPASS } = require('./config.js');
 
-//const Islander = require('./islander/Islander')
-//const { PrismaClient } = require( '@prisma/client');
+const { PrismaClient } = require( '@prisma/client');
 const mysql = require('mysql');
+//const Islander = require('./islander/Islander')
+
 
 
 class ClientDecorator extends Client{
@@ -22,7 +23,7 @@ class ClientDecorator extends Client{
             database        : 'discordstats'
           });
         
-        //this.prisma = new PrismaClient()
+        this.prisma = new PrismaClient()
         this.logChannel;
         //this.islander = new Islander(this);
     }
