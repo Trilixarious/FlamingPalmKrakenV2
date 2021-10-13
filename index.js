@@ -5,7 +5,7 @@ const { token,DBHOST,DBPASS } = require('./config.js');
 
 const { PrismaClient } = require( '@prisma/client');
 const mysql = require('mysql');
-const Islander = require('./islander/Islander')
+const Islander = require('./islander/islander.js')
 
 
 
