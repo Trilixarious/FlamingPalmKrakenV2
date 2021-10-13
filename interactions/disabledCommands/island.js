@@ -2,50 +2,43 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed,MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
+	name: 'island',
 	data: new SlashCommandBuilder()
 		.setName('island')
 		.setDescription('Check progress on your island'),
 	async execute(interaction) {
-        client.islander.GetIsland(interaction.user.id).then(island =>  {
+        client.islander.GetMemberIsland(interaction.user.id).then(member =>  {
+			let island = member.i_Island;
             const embed = new MessageEmbed()
             .setColor('#FD8612')
-           
-            .setTitle( interaction.user.username + "'s island")
-            //.setURL('https://discord.js.org/')
-            .setAuthor('Islander', 'https://flamingpalm.com/images/FlamingPalmLogoSmall.png', 'https://flamingpalm.com/Islander')
+            .setTitle(  "Island")
+            .setAuthor(member.DisplayName, 'https://cdn.discordapp.com/avatars/'+member.ID+'/'+interaction.user.avatar, 'https://flamingpalm.com')
             //.setDescription('Some description here')
             //.setThumbnail('https://i.imgur.com/AfFp7pu.png')
-            .addFields(
-                { name: 'Town center', value: 'lvl '+ island.buildings.find( x => x.name = "TownCenter").level  },
-                //{ name: '\u200B', value: '\u200B' },
-                
-            )
+
             .setImage('https://www.kenney.nl/assets/hexagon-kit/sample.png')
             .setTimestamp()
-            .setFooter('Some footer text here', 'https://flamingpalm.com/images/FlamingPalmLogoSmall.png');
-            console.log(island);
-            island.buildings.filter(x => x.name != "TownCenter" ).forEach((b) =>{
-                if( b.level > 0 ){
-                    embed.addField(b.name, 'lvl ' + b.level, true);
-                }
-            });
+            .setFooter('Work in progress Islander game', 'https://flamingpalm.com/images/FlamingPalmLogoSmall.png');
+			island.i_Building_Island.forEach(ibi =>{
+				let bl = ibi.i_BuildingLevel;
+			 	embed.addField(bl.Name, 'lvl ' + bl.Level, true);
+			})
 
             const hiddenEmbed = new MessageEmbed()
-            .setColor('#98FFFF')
-            .setTitle( "your private stats")
+            .setColor('#c8dcff')
+            .setTitle( "Private island info")
             //.setURL('https://discord.js.org/')
             //.setAuthor('Islander', 'https://flamingpalm.com/images/FlamingPalmLogoSmall.png', 'https://flamingpalm.com/Islander')
             .setDescription(island.Wood+'🪵 '+island.Stone+'🧱 '+island.Food+'🍞 '+island.Currency+'🪙')
             .setImage('https://flamingpalm.com/images/banner.png')
-            .addFields(
+			.setTimestamp()
+			.setFooter('Work in progress Islander game', 'https://flamingpalm.com/images/FlamingPalmLogoSmall.png')
+			.addFields(
                 { name: 'Units', value: 'no units '  },
-                { name: 'Expeditions', value: 'no active expeditions'},
-                //{ name: '\u200B', value: '\u200B' },
-                
+                { name: 'Expeditions', value: 'no active expeditions'}
             )
-            
-            //interaction.channel.send({ embeds: [exampleEmbed] });
-            const row = new MessageActionRow()
+
+			let row = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
 					.setCustomId('islanderBuild')
@@ -66,14 +59,15 @@ module.exports = {
                 new MessageButton()
 					.setCustomId('islanderExpedition')
 					.setLabel('Start expedition')
-					.setStyle('SECONDARY'),
+					.setStyle('SECONDARY')
 			);
 
-            interaction.reply({ embeds: [embed] , ephemeral: false });
+            interaction.reply({ embeds: [embed] , ephemeral: true });
             interaction.followUp({ embeds: [hiddenEmbed] , components: [row] ,ephemeral: true });
         },error =>{
-             interaction.reply({ content: "Island not avaible", ephemeral: true });
+			 console.log(error);
+             interaction.reply({ content: "Island not available", ephemeral: true });
         });
 	},
-    isGuild: true
+    isGuild: true,
 };
