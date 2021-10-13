@@ -6,10 +6,10 @@ const { clientId, token } = require('./config.js');
 const guildCommands = [];
 const commands = [];
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./interactions/commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
+	const command = require(`./interactions/commands/${file}`);
 	if(command.isGuild) guildCommands.push(command.data.toJSON());
 	else commands.push(command.data.toJSON());
 }

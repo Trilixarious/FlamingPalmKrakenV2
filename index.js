@@ -5,27 +5,19 @@ const { token,DBHOST,DBPASS } = require('./config.js');
 
 const { PrismaClient } = require( '@prisma/client');
 const mysql = require('mysql');
-//const Islander = require('./islander/Islander')
+const Islander = require('./islander/Islander')
 
 
 
 class ClientDecorator extends Client{
     constructor(){
         super({
-            intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_BANS,
-                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-                Intents.FLAGS.GUILD_INTEGRATIONS,
-                Intents.FLAGS.GUILD_WEBHOOKS,
-                Intents.FLAGS.GUILD_INVITES,
-                Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_PRESENCES,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-                Intents.FLAGS.GUILD_MESSAGE_TYPING,
-                Intents.FLAGS.DIRECT_MESSAGES,
-                Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-                Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+            intents: [
+                Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS,
+                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_WEBHOOKS,
+                Intents.FLAGS.GUILD_INVITES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES,
+                Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING,
+                Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGE_TYPING,
             ],
             partials: ['MESSAGE', 'CHANNEL', 'REACTION']
          });
@@ -39,7 +31,7 @@ class ClientDecorator extends Client{
         
         this.prisma = new PrismaClient()
         this.logChannel;
-        //this.islander = new Islander(this);
+        this.islander = new Islander(this);
     }
     log(loggText){
         console.log(loggText);
@@ -51,13 +43,9 @@ class ClientDecorator extends Client{
 }
 global.client = new ClientDecorator();
 
-client.commands = new Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.data.name, command);
-}
+client.commands =  loadInteractionActions( 'commands');
+client.buttons =  loadInteractionActions('buttons');
+client.selectMenus =  loadInteractionActions('selectMenus');
 
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
@@ -72,3 +60,13 @@ for (const file of eventFiles) {
 
 // Login to Discord with your client's token
 client.login(token);
+
+function loadInteractionActions( folderName ){
+    let tempList = new Collection();
+    let actionFiles = fs.readdirSync('./interactions/'+ folderName).filter(file => file.endsWith('.js'));
+    for (const file of actionFiles) {
+        let action = require(`./interactions/${folderName}/${file}`);
+        tempList.set(action.name, action);
+    }
+    return tempList;
+}

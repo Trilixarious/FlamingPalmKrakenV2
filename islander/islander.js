@@ -1,15 +1,14 @@
-const { prisma } = require('.prisma/client');
-const cron = require('node-cron');
+//const cron = require('node-cron');
 
 class Islander {
 	constructor(client){
 		this.client = client;
 	}
-	GetIsland( memberID){
+	GetMemberIsland( memberID){
 		return new Promise(async function(resolve,reject) {
 			client.prisma.members.findUnique( {
 				where: {
-					ID: memberID
+					ID: memberID,
 				},
 				include: {
 					i_Island: {
@@ -17,41 +16,62 @@ class Islander {
 							i_Building_Island: {
 								include: {
 									i_Building: true,
+									i_BuildingLevel: true
 								}
 							}
 						}
-					},
-				},
-			}).then( member => console.log(member));
-
-			// client.DBconnection.query(
-			// 	'SELECT * FROM Island where ID = ?',[memberID], function (error, results, fields) {
-			// 		if(error != null){ client.log(error);}
-			// 		if(results.length == 1 ) resolve(  new Island(results[0]));
-			// 		reject();
-			// 	});
+					}
+				}
+			}).then( member => resolve(member));
 		 });
-
-		
-		// return new Promise(function(resolve,reject) {
-		// client.DBconnection.query(
-		// 	'SELECT * FROM Island where ID = ?',[memberID], function (error, results, fields) {
-		// 		if(error != null){ client.log(error);}
-		// 		if(results.length == 1 ) resolve(  new Island(results[0]));
-		// 		reject();
-		// 	});
-		// });
 	}
 
-	SpawnIsland( memberID){
-		// island = await prisma.island.create({
-			
-		// })
-		// client.DBconnection.query(
-		// 	'INSERT INTO Island (ID) VALUES (?)',[memberID], function (error, results, fields) {
-		// 		if(error != null){ client.log(error); }
-		// 		return error == null;
-		// 	});
+	SpawnIsland(memberID){
+		return new Promise(async function(resolve,reject) {
+			let island = await client.prisma.i_Island.create({
+				data:{
+					ID: memberID,
+					Wood: 50,
+					i_Building_Island: {
+						create: [
+							{BuildingID: 1,level: 1},
+							{BuildingID: 2,level: 1},
+							{BuildingID: 3,level: 1},
+							{BuildingID: 4,level: 1},
+						]
+					}
+				}
+			});
+			resolve(island);
+		});
+	}
+
+	GetBuildable(memberID){
+		return new Promise(async function(resolve,reject) {
+			let member = await client.islander.GetMemberIsland(memberID);
+			let buildings = await client.prisma.i_BuildingLevel.findMany({
+				where:{
+					TClevel:{lte: member.i_Island.i_Building_Island[0].level + 1},
+					Level: 1,
+					BuildingID: {notIn: member.i_Island.i_Building_Island.map(x => x.BuildingID)}
+				}
+			})
+			resolve({ m: member,b: buildings});
+		});
+	}
+
+	GetUpgradable(memberID){
+		return new Promise(async function(resolve,reject) {
+			let member = await client.islander.GetMemberIsland(memberID);
+			let buildings = await client.prisma.i_BuildingLevel.findMany({
+				where:{
+					//TClevel:{lte: member.i_Island.i_Building_Island[0].level},
+					BuildingID: {in: member.i_Island.i_Building_Island.map(x => x.BuildingID)}
+				}
+			})
+			buildings = buildings.filter(x => x.Level == (member.i_Island.i_Building_Island.find(q => q.BuildingID == x.BuildingID).level)+1)
+			resolve({ m: member,b: buildings});
+		});
 	}
 }
 

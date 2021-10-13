@@ -8,8 +8,9 @@ datasource db {
 }
 
 model Channel {
-  ID          String @id @db.VarChar(25)
-  ChannelName String @db.VarChar(255)
+  ID             String           @id @db.VarChar(25)
+  ChannelName    String           @db.VarChar(255)
+  VoiceConnected VoiceConnected[]
 }
 
 model Members {
@@ -98,9 +99,11 @@ model VoiceConnected {
   ID        String   @db.VarChar(25)
   TimeStamp DateTime @default(now()) @db.Timestamp(0)
   ChannelID String   @db.VarChar(25)
+  Channel   Channel  @relation(fields: [ChannelID], references: [ID], onUpdate: Restrict, map: "VoiceConnected_Channel_ID_fk")
   Members   Members  @relation(fields: [ID], references: [ID], onUpdate: Restrict, map: "VoiceConnected_ibfk_1")
 
   @@id([ID, TimeStamp, ChannelID])
+  @@index([ChannelID], map: "VoiceConnected_Channel_ID_fk")
 }
 
 model i_Building {
@@ -111,14 +114,18 @@ model i_Building {
 }
 
 model i_Building_Island {
-  BuildingID Int
-  IslandID   String     @db.VarChar(25)
-  level      Int        @default(1) @db.UnsignedTinyInt
-  i_Building i_Building @relation(fields: [BuildingID], references: [ID], onUpdate: Restrict, map: "i_Building_Island_ibfk_3")
-  i_Island   i_Island   @relation(fields: [IslandID], references: [ID], onDelete: Cascade, onUpdate: Restrict, map: "i_Building_Island_ibfk_2")
+  BuildingID      Int
+  IslandID        String          @db.VarChar(25)
+  level           Int             @default(1) @db.UnsignedTinyInt
+  i_Building      i_Building      @relation(fields: [BuildingID], references: [ID], onUpdate: Restrict, map: "i_Building_Island_ibfk_3")
+  i_Island        i_Island        @relation(fields: [IslandID], references: [ID], onDelete: Cascade, onUpdate: Restrict, map: "i_Building_Island_ibfk_2")
+  i_BuildingLevel i_BuildingLevel @relation(fields: [level, BuildingID], references: [Level, BuildingID], onUpdate: Restrict, map: "i_Building_Island_i_BuildingLevel_Level_BuildingID_fk")
 
   @@id([BuildingID, IslandID])
   @@index([IslandID], map: "IslandID")
+  @@index([BuildingID], map: "i_Building_Island_BuildingID_index")
+  @@index([level, BuildingID], map: "i_Building_Island_level_BuildingID_index")
+  @@index([level], map: "i_Building_Island_level_index")
 }
 
 model i_Island {
@@ -141,20 +148,24 @@ model i_Unit {
 }
 
 model i_BuildingLevel {
-  BuildingID Int
-  Level      Int        @db.UnsignedTinyInt
-  Name       String     @db.VarChar(255)
-  Wood       Int        @default(0) @db.UnsignedMediumInt
-  Food       Int        @default(0) @db.UnsignedMediumInt
-  Stone      Int        @default(0) @db.UnsignedMediumInt
-  Time       Int        @default(0) @db.UnsignedMediumInt
-  TClevel    Int?       @default(0) @db.UnsignedTinyInt
-  imagename  String     @default("") @db.VarChar(255)
-  imagePosY  Int        @default(0) @db.MediumInt
-  imagePosX  Int        @default(0) @db.MediumInt
-  i_Building i_Building @relation(fields: [BuildingID], references: [ID], onDelete: Cascade, map: "i_BuildingLevel_ibfk_1")
+  BuildingID        Int
+  Level             Int                 @db.UnsignedTinyInt
+  Name              String              @db.VarChar(255)
+  Wood              Int                 @default(0) @db.UnsignedMediumInt
+  Food              Int                 @default(0) @db.UnsignedMediumInt
+  Stone             Int                 @default(0) @db.UnsignedMediumInt
+  Time              Int                 @default(0) @db.UnsignedMediumInt
+  TClevel           Int?                @default(0) @db.UnsignedTinyInt
+  imagename         String              @default("") @db.VarChar(255)
+  imagePosY         Int                 @default(0) @db.MediumInt
+  imagePosX         Int                 @default(0) @db.MediumInt
+  i_Building        i_Building          @relation(fields: [BuildingID], references: [ID], onDelete: Cascade, map: "i_BuildingLevel_ibfk_1")
+  i_Building_Island i_Building_Island[]
 
   @@id([BuildingID, Level])
+  @@index([BuildingID, Level], map: "i_BuildingLevel_BuildingID_Level_index")
+  @@index([BuildingID], map: "i_BuildingLevel_BuildingID_index")
+  @@index([Level], map: "i_BuildingLevel_Level_index")
 }
 
 model i_Unit_Island {
