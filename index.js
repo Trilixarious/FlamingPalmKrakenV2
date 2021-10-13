@@ -44,8 +44,8 @@ class ClientDecorator extends Client{
 global.client = new ClientDecorator();
 
 client.commands =  loadInteractionActions( 'commands');
-client.buttons =  loadInteractionActions('buttons');
-client.selectMenus =  loadInteractionActions('selectMenus');
+//client.buttons =  loadInteractionActions('buttons');
+//client.selectMenus =  loadInteractionActions('selectMenus');
 
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
