@@ -21,7 +21,8 @@ module.exports = {
             include:{RewardItem: true}
         })
         rewards.forEach(reward =>{
-            embed.addField(reward.Title, `${reward.Description }\n **${reward.Price}:palm_tree:**` , false);
+            let stock = reward.RewardItem.filter(x =>  x.RedeemedBy == "").length;
+            embed.addField(reward.Title, `${reward.Description }\n ${stock} key${stock == 1?'':'s'} in stock\n**${reward.Price}:palm_tree:**` , false);
         })
         let row = new MessageActionRow()
             .addComponents(
@@ -29,7 +30,7 @@ module.exports = {
                     .setURL('https://flamingpalm.com/members')
                     .setLabel('Redeem on website')
                     .setStyle('LINK'));
-        interaction.reply({embeds: [embed], content: "store is still work in progress",components: [row], ephemeral: false});
+        interaction.reply({embeds: [embed],components: [row], ephemeral: false});
     },
     isGuild: true
 };
